@@ -3,8 +3,6 @@ import subprocess
 import re
 from packaging import version
 
-# get information
-
 
 def get_solidity_source():
     with open(sys.argv[1], 'r') as f:
@@ -20,7 +18,7 @@ def info_version(sign_list, version_list):
 
 
 def write_version_list():
-    output_file = './solc_list.txt'
+    output_file = 'solc_list.txt'
     result = subprocess.run(['solc-select', 'install'],
                             capture_output=True, text=True).stdout.split('\n')
     result.pop(0)
@@ -31,30 +29,26 @@ def write_version_list():
 
 def read_version_list():
     version_list = []
-    with open('./solc_list.txt', 'r') as f:
+    with open('/Users/sikk/project_dream/solc_parser_v2/solc_list.txt', 'r') as f:
         for line in f.readlines():
             version_list.append(line.strip())
-    print(version_list)
     return version_list
-
-# parse solidity version
 
 
 def parse_solidity_version(source_code):
-    version_pattern = r"pragma solidity\s+(.*?);"
-    pragma_matches = re.findall(version_pattern, source_code, re.DOTALL)
+    pattern = r".*pragma solidity.*"
+    pragma_lines = re.findall(pattern, source_code)
     version = []
     sign = []
-    for pragma_match in pragma_matches:
+    for pragma_match in pragma_lines:
         condition_pattern = r"(\^|=|~|>=|<=|>|<)?\s*([0-9]+\.[0-9]+(\.[0-9]+)?)"
         condition_matches = re.findall(condition_pattern, pragma_match)
         for condition_match in condition_matches:
             sign.append(condition_match[0].strip()
                         if condition_match[0] else "")
             version.append(condition_match[1].strip())
-    print(sign, version)
     if len(version) != 1:
-        compare_version(sign, version)
+        sign, version = compare_version(sign, version)
     return sign, version
 
 
@@ -64,27 +58,29 @@ def compare_version(sign_list, version_list):
     return sign_list[min_index], min_version
 
 
-# search correct solc version
 def get_lower_version(version_list, target_version):
+    matching_version = []
     for v in version_list:
         if v == target_version:
-            matching_version = version_list[version_list.index(v) - 1]
+            matching_version.append(version_list[version_list.index(v) - 1])
     if not matching_version:
         return None
-    return matching_version
+    return str(max(map(version.parse, matching_version[0])))
 
 
 def get_higher_version(version_list, target_version):
+    matching_version = []
     for v in version_list:
         if v == target_version:
-            matching_version = version_list[version_list.index(v) + 1]
+            matching_version.append(version_list[version_list.index(v) + 1])
     if not matching_version:
         return None
-    return matching_version
+    return str(max(map(version.parse, matching_version[0])))
 
 
 def get_highest_version(version_list, target_version):
     matching_versions = []
+    print(target_version)
     target_major_minor = '.'.join(target_version.split('.')[:2])
     for v in version_list:
         if v.startswith(target_major_minor):
@@ -92,8 +88,6 @@ def get_highest_version(version_list, target_version):
     if not matching_versions:
         return None
     return str(max(map(version.parse, matching_versions)))
-
-# install correct solc version
 
 
 def install_solc(version):
