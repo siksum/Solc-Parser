@@ -18,6 +18,12 @@ def get_version_list():
     available_releases = list(available_releases.keys())
     return available_releases
 
+def check_version(version_list, version):
+    for v in version:
+        if v not in version_list:
+            return False   
+        else:
+            return True
 
 def parse_solidity_version(source_code):
     pattern = r".*pragma solidity.*"
@@ -31,20 +37,13 @@ def parse_solidity_version(source_code):
             sign.append(condition_match[0].strip()
                         if condition_match[0] else "")
             version.append(condition_match[1].strip())
-    if len(version) != 1:
-        sign, version = compare_version(sign, version)
     return sign, version
 
 
 def compare_version(sign_list, version_list):
-    if "<=" or "<" in sign_list:
-        min_version = version_list[sign_list.index("<=") or sign_list.index("<")]
-        min_index = version_list.index(min_version)
-        return sign_list[min_index], min_version
-    else:
-        min_version = min(version_list)
-        min_index = version_list.index(min_version)
-    return sign_list[min_index], min_version
+    min_version = min(version_list)
+    min_index = version_list.index(min_version)
+    return list(sign_list[min_index]), list([min_version])
 
 
 def get_lower_version(version_list, target_version):
@@ -54,7 +53,7 @@ def get_lower_version(version_list, target_version):
             matching_version.append(version_list[version_list.index(v) - 1])
     if not matching_version:
         return None
-    return str(max(map(version.parse, matching_version[0])))
+    return matching_version[0]
 
 
 def get_higher_version(version_list, target_version):
@@ -64,19 +63,18 @@ def get_higher_version(version_list, target_version):
             matching_version.append(version_list[version_list.index(v) + 1])
     if not matching_version:
         return None
-    return str(max(map(version.parse, matching_version[0])))
+    return matching_version[0]
 
 
 def get_highest_version(version_list, target_version):
     matching_versions = []
-    print(target_version)
     target_major_minor = '.'.join(target_version.split('.')[:2])
     for v in version_list:
         if v.startswith(target_major_minor):
             matching_versions.append(v)
     if not matching_versions:
         return None
-    return str(max(map(version.parse, matching_versions)))
+    return matching_versions[0]
 
 
 def install_solc(version):

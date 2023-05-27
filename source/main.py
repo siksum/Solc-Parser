@@ -19,7 +19,13 @@ def parse_args():
         version_list = ps.get_version_list()
         solidity_file = ps.get_solidity_source()
         sign, version = ps.parse_solidity_version(solidity_file)
-        return version_list, sign, version
+        check = ps.check_version(version_list, version)
+        if check == False:
+            print("incorrect version")
+            return
+        if len(version) != 1:
+            sign, version = ps.compare_version(sign, version)
+        return version_list, sign[0], version[0]
 
 
 
@@ -28,6 +34,7 @@ def main():
 
     if args:
         version_list, sign, version = args
+        
         if sign == '<':
             version = ps.get_higher_version(version_list, version)
             ps.install_solc(version)
@@ -37,7 +44,7 @@ def main():
         elif (sign == '^' or sign == '~'):
             version = ps.get_highest_version(version_list, version)
             ps.install_solc(version)
-        elif (sign == '=' or sign == '>=' or sign == '<=' or (sign == "" and version is not None)):
+        elif (sign == '=' or sign == '>=' or sign == '<=') or (not sign and version):
             ps.install_solc(version)
         else:
             print("incorrect sign")
