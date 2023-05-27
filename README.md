@@ -131,5 +131,6 @@ pip3 install solc-select
 💡 List
 
     1. 와일드카드(*) 경우의 수 처리하기
+    2. option update
 
 </aside>
