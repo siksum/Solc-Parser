@@ -38,74 +38,16 @@ pragma solidity [version];
 - 지원 사양: macos m2
 
 ```shell
-    pip3 install solc-select
+pip3 install solc-select
 ```
 
 ---
-
-## 고려해야할 사항
-
-<aside>
-💡 경우의 수
-
-- [x] 0.x
-- [x] 0.x.x
-- 사용할 수 있는 기호
-  - [x] ^ : 최신 마이너 버전
-  - [x] ~ : 최신 패치 버전
-  - [ ] \* : 모든 버전
-    - pragma solidity \*
-    - pragma solidity \*.0
-    - pragma solidity \*.x
-    - pragma solidity \*.\*
-    - pragma solidity \*.\*.0
-    - pragma solidity \*.\*.x
-    - pragma solidity \*.\*.\*
-    - pragma soldity 0.\*
-    - pragma soldity 0.\*.\*
-    - pragma soldity 0.0.\*
-  - [x] = : 특정 버전
-  - [x] ≥ : 특정 버전 이상
-  - [x] ≤ : 특정 버전 이하
-  - [x] > : 특정 버전 초과
-  - [x] < : 특정 버전 미만
-  - [x] 숫자만 기입
-    - pragma solidty 0.x.x
-- [x] range 설정
-  - ≥0.4.5 ≤0.7.0
-
-</aside>
-
-## 조건에 따른 버전 선택
-
-### 고려해야할 것
-
-<aside>
-💡 List
-
-1. 부버전과 일치하는 것 중 가장 높은 버전을 고르면 되는 경우
-   - [x] 캐럿 기호(^)
-   - [x] ~
-   - [x] ≥
-   - [x] range
-   - [ ] \*
-2. 추출한 target_version과 동일한 버전을 고르면 되는 경우
-   - [x] =
-   - [x] ≤
-   - [x] 숫자만 기입
-3. 입력한 버전의 패치버전에서 -1(list에서)
-   - [x] <
-4. 입력한 버전의 패치버전에서 +1(list에서)
-   - [x] >
-5. range로 들어온 경우
-   - [x] 기호와 버전을 각각 분리해서 저장 → list
-   - [x] 버전 리스트 중 가장 높은 버전의 기호에 따른 1-4 로직 연결
-   </aside>
 
 ## 변경 사항
 
 <aside>
 💡 V1 update
+
     1. solc version list crawling 방식
         - ethereum/solidity release 페이지에서 정적 크롤링
         - selenium, chromedriver를 이용한 동적 크롤링
@@ -124,6 +66,62 @@ pragma solidity [version];
     4. 적절한 버전 선택(가장 높은 패치 버전을 선택해야 할 때)
         - 부버전을 추출하여 같은 버전 리스트에 같은 부버전이 있을 때, 패치 버전에서 -1/+1
         → 해당 버전이 리스트에 존재할 때, 바로 앞/뒤 버전을 선택하도록 변경(따로 부버전 추출할 필요 없음)
+
+</aside>
+
+## 고려해야할 사항
+
+<aside>
+💡 경우의 수
+
+    - [x] 0.x
+    - [x] 0.x.x
+    - 사용할 수 있는 기호
+    - [x] ^ : 최신 마이너 버전
+    - [x] ~ : 최신 패치 버전
+    - [ ] \* : 모든 버전
+        - pragma solidity \*
+        - pragma solidity \*.0
+        - pragma solidity \*.x
+        - pragma solidity \*.\*
+        - pragma solidity \*.\*.0
+        - pragma solidity \*.\*.x
+        - pragma solidity \*.\*.\*
+        - pragma soldity 0.\*
+        - pragma soldity 0.\*.\*
+        - pragma soldity 0.0.\*
+    - [x] = : 특정 버전
+    - [x] ≥ : 특정 버전 이상
+    - [x] ≤ : 특정 버전 이하
+    - [x] > : 특정 버전 초과
+    - [x] < : 특정 버전 미만
+    - [x] 숫자만 기입
+        - pragma solidty 0.x.x
+    - [x] range 설정
+    - ≥0.4.5 ≤0.7.0
+
+</aside>
+
+<aside>
+💡 List
+
+    1. 부버전과 일치하는 것 중 가장 높은 버전을 고르면 되는 경우
+        - [x] 캐럿 기호(^)
+        - [x] ~
+        - [x] ≥
+        - [x] range
+        - [ ] \*
+    2. 추출한 target_version과 동일한 버전을 고르면 되는 경우
+        - [x] =
+        - [x] ≤
+        - [x] 숫자만 기입
+    3. 입력한 버전의 패치버전에서 -1(list에서)
+        - [x] <
+    4. 입력한 버전의 패치버전에서 +1(list에서)
+        - [x] >
+    5. range로 들어온 경우
+        - [x] 기호와 버전을 각각 분리해서 저장 → list
+        - [x] 버전 리스트 중 가장 높은 버전의 기호에 따른 1-4 로직 연결
 
 </aside>
 
