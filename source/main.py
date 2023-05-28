@@ -1,5 +1,6 @@
 import parse as ps
 import argparse
+import env as env
 
 def parse_args():
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter, description="[Description]\n""Solc Automated Parser and Installation Tool.\n" 
@@ -30,11 +31,12 @@ def parse_args():
 
 
 def main():
+    env.halt_incompatible_system()
     args = parse_args()
 
     if args:
         version_list, sign, version = args
-        
+
         if sign == '<':
             version = ps.get_higher_version(version_list, version)
             ps.install_solc(version)

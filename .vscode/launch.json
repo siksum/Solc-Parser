@@ -9,7 +9,7 @@
       "type": "python",
       "request": "launch",
       "program": "${file}",
-      "args": ["source/re-entrancy.sol"],
+      "args": ["test/re-entrancy.sol"],
       "console": "integratedTerminal",
       "justMyCode": true
     }

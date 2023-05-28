@@ -3,7 +3,7 @@ import subprocess
 import re
 import json
 import urllib.request
-from packaging import version
+import env as env
 
 
 def get_solidity_source():
@@ -12,7 +12,7 @@ def get_solidity_source():
     return source_code
 
 def get_version_list():
-    url = "https://binaries.soliditylang.org/macosx-amd64/list.json"
+    url = f"https://binaries.soliditylang.org/{env.soliditylang_platform()}/list.json"
     list_json = urllib.request.urlopen(url).read()
     available_releases = json.loads(list_json)["releases"]
     available_releases = list(available_releases.keys())
