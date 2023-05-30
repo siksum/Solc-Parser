@@ -41,18 +41,18 @@ def main():
         if sign == '<':
             version = version_list[index - 1]
             print("[Output]", version)
-            #ps.install_solc(version)
+            ps.install_solc(version)
         elif sign == '>':
             version = version_list[index + 1]
             print("[Output]", version)
-            #ps.install_solc(version)
+            ps.install_solc(version)
         elif (sign == '^' or sign == '~'):
             version = ps.get_highest_version(version_list, version)
             print("[Output]", version)
             ps.install_solc(version)
         elif (sign == '=' or sign == '>=' or sign == '<=') or (not sign and version):
-           print("[Output]", version)
-           #ps.install_solc(version)
+            print("[Output]", version)
+            ps.install_solc(version)
         else:
             print("incorrect sign")
             return
