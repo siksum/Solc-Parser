@@ -4,6 +4,9 @@ import re
 import json
 import urllib.request
 import env as env
+from pyparsing import Regex, Combine, Literal, OneOrMore
+import textwrap
+from termcolor import colored
 
 
 def get_solidity_source():
@@ -16,7 +19,9 @@ def get_version_list():
     list_json = urllib.request.urlopen(url).read()
     available_releases = json.loads(list_json)["releases"]
     available_releases = list(available_releases.keys())
-    return available_releases
+    sorted_list = sorted(available_releases, key=lambda x: [int(v) for v in x.split('.')])
+
+    return sorted_list
 
 def check_version(version_list, version):
     for v in version:
@@ -25,45 +30,45 @@ def check_version(version_list, version):
         else:
             return True
 
+def find_matching_index(versions, version_list):
+    for i, v in enumerate(version_list):
+        if versions == v:
+            return i
+    return None
+
+
 def parse_solidity_version(source_code):
-    pattern = r".*pragma solidity.*"
-    pragma_lines = re.findall(pattern, source_code)
-    version = []
+    equal = Literal("=")
+    carrot = Literal("^")
+    tilde = Literal("~")
+    inequality = Literal("<=") | Literal(">=") | Literal("<") | Literal(">")
+    combined_inequality = Combine(inequality)
+
+    pragma_pattern = r".*pragma solidity.*"
+    pragma_lines = re.findall(pragma_pattern, source_code)
+
+    version_condition = Regex(r"\d+\.\d+(\.\d+)?")
+    version_with_condition = (carrot | tilde | combined_inequality | equal) + version_condition
+    pragma = Literal("pragma") + Literal("solidity") + OneOrMore(version_with_condition)
+
     sign = []
-    for pragma_match in pragma_lines:
-        condition_pattern = r"(\^|=|~|>=|<=|>|<)?\s*([0-9]+\.[0-9]+(\.[0-9]+)?)"
-        condition_matches = re.findall(condition_pattern, pragma_match)
-        for condition_match in condition_matches:
-            sign.append(condition_match[0].strip()
-                        if condition_match[0] else "")
-            version.append(condition_match[1].strip())
+    version = []
+    parsed_results = pragma.parseString(pragma_lines[0])
+    try:
+        for i, result in enumerate(parsed_results[2:]):
+            if i % 2 == 0:
+                sign.append(result)
+            else:
+                version.append(result)
+    except:
+        pass
     return sign, version
 
 
 def compare_version(sign_list, version_list):
     min_version = min(version_list)
     min_index = version_list.index(min_version)
-    return list(sign_list[min_index]), list([min_version])
-
-
-def get_lower_version(version_list, target_version):
-    matching_version = []
-    for v in version_list:
-        if v == target_version:
-            matching_version.append(version_list[version_list.index(v) - 1])
-    if not matching_version:
-        return None
-    return matching_version[0]
-
-
-def get_higher_version(version_list, target_version):
-    matching_version = []
-    for v in version_list:
-        if v == target_version:
-            matching_version.append(version_list[version_list.index(v) + 1])
-    if not matching_version:
-        return None
-    return matching_version[0]
+    return list([sign_list[min_index]]), list([min_version])
 
 
 def get_highest_version(version_list, target_version):
@@ -72,9 +77,7 @@ def get_highest_version(version_list, target_version):
     for v in version_list:
         if v.startswith(target_major_minor):
             matching_versions.append(v)
-    if not matching_versions:
-        return None
-    return matching_versions[0]
+    return matching_versions[-1]
 
 
 def install_solc(version):
@@ -84,3 +87,9 @@ def install_solc(version):
     print('solc-select use', version)
     subprocess.run(['solc-select', 'use', version],
                    capture_output=True, text=True)
+    print('execute slither')
+    result = subprocess.run(['slither', sys.argv[1]], capture_output=True, text=True).stderr
+
+    indented_result = textwrap.indent(result, '  ')
+    colored_result = colored(indented_result, 'cyan')
+    print(colored_result)

@@ -33,21 +33,26 @@ def parse_args():
 def main():
     env.halt_incompatible_system()
     args = parse_args()
-
+    
     if args:
         version_list, sign, version = args
+        index = ps.find_matching_index(version, version_list)
 
         if sign == '<':
-            version = ps.get_higher_version(version_list, version)
-            ps.install_solc(version)
+            version = version_list[index - 1]
+            print("[Output]", version)
+            #ps.install_solc(version)
         elif sign == '>':
-            version = ps.get_lower_version(version_list, version)
-            ps.install_solc(version)
+            version = version_list[index + 1]
+            print("[Output]", version)
+            #ps.install_solc(version)
         elif (sign == '^' or sign == '~'):
             version = ps.get_highest_version(version_list, version)
+            print("[Output]", version)
             ps.install_solc(version)
         elif (sign == '=' or sign == '>=' or sign == '<=') or (not sign and version):
-            ps.install_solc(version)
+           print("[Output]", version)
+           #ps.install_solc(version)
         else:
             print("incorrect sign")
             return
