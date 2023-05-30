@@ -46,6 +46,7 @@ def parse_solidity_version(source_code):
 
     pragma_pattern = r".*pragma solidity.*"
     pragma_lines = re.findall(pragma_pattern, source_code)
+    print("[Input]:", pragma_lines[0])
 
     version_condition = Regex(r"\d+\.\d+(\.\d+)?")
     version_with_condition = (carrot | tilde | combined_inequality | equal) + version_condition
@@ -87,7 +88,7 @@ def install_solc(version):
     print('solc-select use', version)
     subprocess.run(['solc-select', 'use', version],
                    capture_output=True, text=True)
-    print('execute slither')
+    print('slither', sys.argv[1])
     result = subprocess.run(['slither', sys.argv[1]], capture_output=True, text=True).stderr
 
     indented_result = textwrap.indent(result, '  ')
