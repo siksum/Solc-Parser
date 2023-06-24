@@ -5,12 +5,13 @@ setup(
     version="0.0.1",
     description="Solc Automated Parser and Installation Tool",
     author="Namryeong Kim",
-    url="https://github.com/Namryeong-Kim/solc_parser_v2",
+    url="https://github.com/siksum/Solc-Parser",
     packages=find_packages(),
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     entry_points={
         "console_scripts": [
-            "solc_parser = source.main:main",
+            "solc-parser = source.__main__:__main__",
         ]
     },
     install_requires=["packaging", "requests", "solc-select"],
+)

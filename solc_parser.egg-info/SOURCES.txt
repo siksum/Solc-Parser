@@ -1,0 +1,12 @@
+README.md
+setup.py
+solc_parser.egg-info/PKG-INFO
+solc_parser.egg-info/SOURCES.txt
+solc_parser.egg-info/dependency_links.txt
+solc_parser.egg-info/entry_points.txt
+solc_parser.egg-info/requires.txt
+solc_parser.egg-info/top_level.txt
+source/__init__.py
+source/__main__.py
+source/env.py
+source/solc_parse.py
