@@ -33,8 +33,11 @@ def get_intalled_versions():
 
 
 def get_current_version():
-    with open(f"{SOLC_PARSER_DIR}/global-version", "r", encoding="utf-8") as f:
-        return f.read()
+    if os.path.exists(f"{SOLC_PARSER_DIR}/global-version"):
+        with open(f"{SOLC_PARSER_DIR}/global-version", "r", encoding="utf-8") as f:
+            return f.read()
+    else:
+        return None
 
 
 def check_version(version_list, version):
@@ -114,6 +117,7 @@ def uninstall_solc(version):
         shutil.rmtree(artifact_file_dir)
         print(f"Version '{version}' uninstalled.")
         if version == get_current_version():
+            os.remove(f"{SOLC_PARSER_DIR}/global-version")
             print(
                 f"Version '{version}' was the global version. Switching to version.")
     else:

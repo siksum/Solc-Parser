@@ -58,15 +58,19 @@ def __main__():
         switch_global_version(args.use, True)
         return
     elif args.version:
-        print(f"\nCurrent version: {get_current_version()}\n\nInstalled versions: {get_intalled_versions()}\n")
+        current_version = get_current_version()
+        if not get_current_version():
+            current_version = "None"
+        print(f"\nCurrent version: {current_version}\n\nInstalled versions: {get_intalled_versions()}\n")
     elif args.target:
         (version_list, sign, version) =parse_target_file(args.target)
+        print(version_list)
         index = find_matching_index(version, version_list)
 
         if sign == '<':
-            version = version_list[index - 1]
-        elif sign == '>':
             version = version_list[index + 1]
+        elif sign == '>':
+            version = version_list[index - 1]
         elif (sign == '^' or sign == '~'):
             version = get_highest_version(version_list, version)
         elif (sign == '=' or sign == '>=' or sign == '<=') or (not sign and version):
