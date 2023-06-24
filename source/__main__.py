@@ -8,7 +8,7 @@ def parse_args():
                                      "You can install the appropriate version of the solc binary by automatically extracting the version for the sol file you inserted with input.\n"
                                      "\n"
                                      "solc-parser [target file]\n")
-    parser.add_argument("input file", nargs='?',
+    parser.add_argument("target", nargs='?',
                         help='Input your source file (.sol)')
     parser.add_argument(
         "--list", help="Show solc version list", action="store_true")
@@ -25,11 +25,21 @@ def parse_args():
 
     return parser.parse_args()
 
+def parse_target_file(target):
+    version_list = get_version_list()
+    solidity_file = get_solidity_source(target)
+    sign, version = parse_solidity_version(solidity_file)
+    check = check_version(version_list, version)
+    if check == False:
+        print("incorrect version")
+        return
+    if len(version) != 1:
+        sign, version = compare_version(sign, version)
+    return (list(version_list.keys()), sign[0], version[0])
 
 def __main__():
     halt_incompatible_system()
     args = parse_args()
-    print(args)
 
     if args.list:
         version_list =get_version_list()
@@ -37,44 +47,41 @@ def __main__():
             print(v)
         return
     elif args.install:
-        install_solc(args.install[0])
+        for v in args.install:
+            install_solc(v)
         return
-    # else:
-    #     version_list = get_version_list()
-    #     solidity_file = get_solidity_source()
-    #     sign, version = parse_solidity_version(solidity_file)
-    #     check = check_version(version_list, version)
-    #     if check == False:
-    #         print("incorrect version")
-    #         return
-    #     if len(version) != 1:
-    #         sign, version = compare_version(sign, version)
-    #     version_list, sign[0], version[0]
+    elif args.uninstall:
+        for v in args.uninstall:
+            uninstall_solc(v)
+        return
+    elif args.use:
+        switch_global_version(args.use, True)
+        return
+    elif args.version:
+        print(f"\nCurrent version: {get_current_version()}\n\nInstalled versions: {get_intalled_versions()}\n")
+    elif args.target:
+        (version_list, sign, version) =parse_target_file(args.target)
+        index = find_matching_index(version, version_list)
 
-    # if args:
-    #     version_list, sign, version = args
-    #     index = find_matching_index(version, version_list)
-
-    #     if sign == '<':
-    #         version = version_list[index - 1]
-    #         print("[Output]", version)
-    #         install_solc(version)
-    #     elif sign == '>':
-    #         version = version_list[index + 1]
-    #         print("[Output]", version)
-    #         install_solc(version)
-    #     elif (sign == '^' or sign == '~'):
-    #         version = get_highest_version(version_list, version)
-    #         print("[Output]", version)
-    #         install_solc(version)
-    #     elif (sign == '=' or sign == '>=' or sign == '<=') or (not sign and version):
-    #         print("[Output]", version)
-    #         install_solc(version)
-    #     else:
-    #         print("incorrect sign")
-    #         return
-    # else:
-    #     return
+        if sign == '<':
+            version = version_list[index - 1]
+        elif sign == '>':
+            version = version_list[index + 1]
+        elif (sign == '^' or sign == '~'):
+            version = get_highest_version(version_list, version)
+        elif (sign == '=' or sign == '>=' or sign == '<=') or (not sign and version):
+            version = version
+        else:
+            print("incorrect sign")
+            return
+        if version:
+            if not check_installed_version(version):
+                install_solc(version)
+                switch_global_version(version, True)
+            else:
+                switch_global_version(version, False)
+    else:
+        return
 
 
 if __name__ == "__main__":
