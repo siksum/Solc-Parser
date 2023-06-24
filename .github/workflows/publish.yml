@@ -20,7 +20,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          python3 -m pip3 install --upgrade pip3
+          python3 -m pip install --upgrade pip
           pip3 install setuptools wheel twine
 
       - name: Build Package
