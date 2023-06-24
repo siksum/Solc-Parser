@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="solc parser",
-    version="0.0.1",
+    version="1.0.3",
     description="Solc Automated Parser and Installation Tool",
     author="Namryeong Kim",
     url="https://github.com/siksum/Solc-Parser",
@@ -13,5 +13,4 @@ setup(
             "solc-parser = source.__main__:__main__",
         ]
     },
-    install_requires=["packaging", "requests", "solc-select"],
 )

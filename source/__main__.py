@@ -64,7 +64,6 @@ def __main__():
         print(f"\nCurrent version: {current_version}\n\nInstalled versions: {get_intalled_versions()}\n")
     elif args.target:
         (version_list, sign, version) =parse_target_file(args.target)
-        print(version_list)
         index = find_matching_index(version, version_list)
 
         if sign == '<':

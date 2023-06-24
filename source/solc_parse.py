@@ -94,6 +94,9 @@ def get_highest_version(version_list, target_version):
 
 def install_solc(version):
     artifact_file_dir = SOLC_BINARIES_DIR.joinpath(f"solc-{version}")
+    if os.path.exists(artifact_file_dir):
+        print(f"'{version}' is already installed.")
+        return False
     artifacts = get_version_list()
     url = f"https://binaries.soliditylang.org/macosx-amd64/" + \
         artifacts.get(version)

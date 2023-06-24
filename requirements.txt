@@ -1,7 +1,0 @@
-crytic-compile==0.3.1
-packaging==23.1
-pycryptodome==3.17
-pycryptodomex==3.17
-requests==2.28.2
-solc-select==1.0.3
-urllib3==1.26.14
