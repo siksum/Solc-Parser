@@ -68,7 +68,7 @@ solc-parser --install [version]
 ```
 
 - 띄워쓰기를 기준으로 복수의 버전 입력할 수 있음.
-- .solc-parser/binaries 하위에 설치됨
+- .solc-parser/binaries 하위에 설치됨.
 
 [Output]
 
