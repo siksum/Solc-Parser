@@ -18,6 +18,9 @@ jobs:
         with:
           python-version: 3.x
 
+      - name: Run Build Script
+        run: ./build.sh
+
       - name: Install Dependencies
         run: |
           python3 -m pip install --upgrade pip
