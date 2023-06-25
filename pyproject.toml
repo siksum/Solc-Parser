@@ -1,0 +1,22 @@
+[project]
+name = "Solc_Parser_Namryeong_Kim"
+version = "1.0.3"
+authors = [
+  { name="Namryeong Kim", email="namyoung0718@google.com" },
+]
+description = "You can now install and uninstall the desired solc version.
+                Additionally, you can parse the pragma solidity version information from your input sol file and install the appropriate solc version based on the specified symbols.
+                The solc binaries are installed under the directory .solc-parser/binaries/. 
+                The tool requires Python 3.8 or higher.
+                Currently, the functionality is supported for macOS."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/siksum/Solc-Parser"
+"Bug Tracker" = "https://github.com/siksum/Solc-Parser/issues"
