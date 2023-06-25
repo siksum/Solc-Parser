@@ -14,7 +14,7 @@ pragma solidity [version];
     - The logic is performed based on the presence of <, <= signs.
   - If ^, ~, or >= symbols are present, the latest patch version of the corresponding minor version is retrieved.
     - For example, ^0.8.9 would retrieve version 0.8.20. ~0.7 would retrieve version 0.7.6.
-  - If >, < symbols are present, the closest patch version to the specified version is selected.
+  - If >, < symbols are present, the closest patch version to the specified version is selected.
 
 ## Requirements
 
