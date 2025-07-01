@@ -6,6 +6,7 @@ import json
 from .env import *
 from pathlib import Path
 import shutil
+import semantic_version
 
 if "VIRTUAL_ENV" in os.environ:
     HOME_DIR = Path(os.environ["VIRTUAL_ENV"])
@@ -63,18 +64,21 @@ def find_matching_index(versions, version_list):
 
 
 def parse_solidity_version(source_code):
-    pattern = r".*pragma solidity.*"
+    pattern = r"pragma solidity\s+([^;]+)" # 정규 표현식 수정 
     pragma_lines = re.findall(pattern, source_code)
-    version = []
-    sign = []
+    if not pragma_lines:
+        print("not pragma found")
+        return None
+    
+    version=[]
     for pragma_match in pragma_lines:
-        condition_pattern = r"(\^|=|~|>=|<=|>|<)?\s*([0-9]+\.[0-9]+(\.[0-9]+)?)"
-        condition_matches = re.findall(condition_pattern, pragma_match)
-        for condition_match in condition_matches:
-            sign.append(condition_match[0].strip()
-                        if condition_match[0] else "")
-            version.append(condition_match[1].strip())
-    return sign, version
+        pragma_match=pragma_match.strip()
+        try:
+		        # NpmSpec으로 파싱 
+            version.append(semantic_version.NpmSpec(pragma_match))
+        except:
+            print("err: semantic version parsing")
+    return version
 
 
 def compare_version(sign_list, version_list):
