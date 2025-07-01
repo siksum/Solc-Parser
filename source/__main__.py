@@ -49,7 +49,7 @@ def parse_target_file(target):
         except:
             continue  # 잘못된 버전 문자열은 건너뜀
 
-	print("matching version not found")
+    print("matching version not found")
     return None
 
 def __main__():
