@@ -26,16 +26,30 @@ def parse_args():
     return parser.parse_args()
 
 def parse_target_file(target):
-    version_list = get_version_list()
-    solidity_file = get_solidity_source(target)
-    sign, version = parse_solidity_version(solidity_file)
-    check = check_version(version_list, version)
-    if check == False:
-        print("incorrect version")
-        return
-    if len(version) != 1:
-        sign, version = compare_version(sign, version)
-    return (list(version_list.keys()), sign[0], version[0])
+    version_dict = get_version_list() 
+    # 유효한 solidity 버전들을 최신순으로 정렬 
+    available_versions = sorted(list(version_dict.keys()),key=lambda v: semantic_version.Version(v),reverse=True)
+
+    solidity_code = get_solidity_source(target)
+    # solidity code에서 갖고 온 solidity 버전들 
+    pragma_specs = parse_solidity_version(solidity_code) 
+
+    if not pragma_specs:
+        print("pragma solidity not found")
+        return None
+		
+		# pragma_specs에 있는 버전이 available_versions에 있는 버전과 유효한지 판단 
+    for v in available_versions:
+        try:
+            semver_v = semantic_version.Version(v)
+            # 최신 버전부터 검사하기 때문에 유효하면 바로 return 
+            if any(vv.match(semver_v) for vv in pragma_specs):
+                return v
+        except:
+            continue  # 잘못된 버전 문자열은 건너뜀
+
+		print("matching version not found")
+    return None
 
 def __main__():
     halt_incompatible_system()
@@ -63,26 +77,10 @@ def __main__():
             current_version = "None"
         print(f"\nCurrent version: {current_version}\n\nInstalled versions: {get_intalled_versions()}\n")
     elif args.target:
-        (version_list, sign, version) =parse_target_file(args.target)
-        index = find_matching_index(version, version_list)
-
-        if sign == '<':
-            version = version_list[index + 1]
-        elif sign == '>':
-            version = version_list[index - 1]
-        elif (sign == '^' or sign == '~'):
-            version = get_highest_version(version_list, version)
-        elif (sign == '=' or sign == '>=' or sign == '<=') or (not sign and version):
-            version = version
-        else:
-            print("incorrect sign")
-            return
-        if version:
-            if not check_installed_version(version):
-                install_solc(version)
-                switch_global_version(version, True)
-            else:
-                switch_global_version(version, False)
+        version =parse_target_file(args.target)
+        if version==None:
+            print("not version found")
+            return 
     else:
         return
 
