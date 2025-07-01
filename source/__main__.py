@@ -1,6 +1,7 @@
 from .solc_parse import *
 import argparse
 from .env import *
+import semantic_version
 
 
 def parse_args():
