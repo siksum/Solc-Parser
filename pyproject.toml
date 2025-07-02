@@ -1,12 +1,15 @@
 [project]
 name = "solc_parser"
-version = "1.0.4"
+version = "1.1.0"
 authors = [
   { name="Namryeong Kim", email="namyoung0718@google.com" },
 ]
 description = "Solc Automated Parser and Installation Tool"
 readme = "README.md"
 requires-python = ">=3.8"
+dependencies = [
+    "requests",
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",

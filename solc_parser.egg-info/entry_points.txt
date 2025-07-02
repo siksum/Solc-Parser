@@ -1,2 +1,0 @@
-[console_scripts]
-solc-parser = source.__main__:__main__
